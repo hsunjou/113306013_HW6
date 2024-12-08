@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學號_HW6_1A2B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: left;
+            margin: 20px;
+            background-color: #fffdf6;
+        }
+        h1 {
+            text-align: center;
+            background-color: #003366; /* 深藍色 */
+            color: white; /* 白色文字 */
+            padding: 10px;
+        }
+        input {
+            margin: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+        }
+        #result {
+            margin-top: 20px;
+            border: 1px solid #003366;
+            border-color: lightgray;
+            padding: 10px;
+            display: inline-block;
+            text-align: left;
+            width: 100%;
+            background-color: white;
+        }
+        #result p {
+            margin: 5px 0;
+        }
+        #feedback {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>學號_HW6_1A2B</h1>
+    <input type="text" id="guess" maxlength="4" placeholder="請輸入 4個不重複的數字">
+    <button onclick="submitGuess()">guess!</button>
+    <p id="feedback"></p>
+    <div id="result">
+        <h3>遊戲紀錄：</h3>
+    </div>
+
+    <script>
+        let answer = generateAnswer();
+        let attempts = 0;
+
+        function generateAnswer() {
+            const numbers = Array.from({ length: 10 }, (_, i) => i);
+            const answerArray = [];
+            for (let i = 0; i < 4; i++) {
+                const randomIndex = Math.floor(Math.random() * numbers.length);
+                answerArray.push(numbers.splice(randomIndex, 1)[0]);
+            }
+            return answerArray;
+        }
+
+        function submitGuess() {
+            const input = document.getElementById("guess").value;
+            if (!isValidInput(input)) {
+                alert("請輸入四個不重複的數字！");
+                return;
+            }
+
+            attempts++;
+            const result = checkGuess(input);
+            const feedback = result === "4A0B" ? `你答對了！共猜了 ${attempts} 次。` : result;
+
+            if (result === "4A0B") {
+                alert(feedback);
+            }
+
+            document.getElementById("feedback").textContent = feedback;
+            const record = `<p>第 ${attempts} 次：${input} -> ${result}</p>`;
+            document.getElementById("result").innerHTML += record;
+            document.getElementById("guess").value = "";
+        }
+
+        function isValidInput(input) {
+            if (input.length !== 4 || !/^\d{4}$/.test(input)) return false;
+            const uniqueDigits = new Set(input.split(""));
+            return uniqueDigits.size === 4;
+        }
+
+        function checkGuess(input) {
+            const inputArray = input.split("").map(Number);
+            let A = 0, B = 0;
+
+            inputArray.forEach((digit, index) => {
+                if (digit === answer[index]) {
+                    A++;
+                } else if (answer.includes(digit)) {
+                    B++;
+                }
+            });
+
+            return `${A}A${B}B`;
+        }
+    </script>
+</body>
+</html>
